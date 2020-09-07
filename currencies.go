@@ -2,8 +2,6 @@ package informer
 
 import (
 	"fmt"
-
-	sentry "github.com/getsentry/sentry-go"
 )
 
 // Currency stores Currency from Informer
@@ -14,7 +12,7 @@ type Currency struct {
 	Description string `json:"description"`
 	Rate        string `json:"rate"`
 	AutoUpdate  string `json:"autoupdate"`
-	JournalID   string `json:"journal_id"`
+	JournalID   string `json:"journal_id "`
 	LedgerID    string `json:"ledger_id"`
 	BankID      string `json:"bank_id"`
 }
@@ -28,27 +26,19 @@ type Currencies struct {
 func (i *Informer) GetCurrencies() ([]Currency, error) {
 	urlStr := "%scurrencies"
 
-	currencies := []Currency{}
+	currencies := Currencies{}
+	currencies_ := []Currency{}
 
 	url := fmt.Sprintf(urlStr, i.ApiURL)
-	//fmt.Println(url)
 
-	_, response, err := i.Get(url, &currencies)
+	err := i.Get(url, &currencies)
 	if err != nil {
 		return nil, err
 	}
-
-	if response != nil {
-		if response.Errors != nil {
-			for _, e := range *response.Errors {
-				message := fmt.Sprintf("Error in %v: %v", url, e.Message)
-				if i.IsLive {
-					sentry.CaptureMessage(message)
-				}
-				fmt.Println(message)
-			}
-		}
+	for id, currency := range currencies.Currencies {
+		currency.ID = id
+		currencies_ = append(currencies_, currency)
 	}
 
-	return currencies, nil
+	return currencies_, nil
 }

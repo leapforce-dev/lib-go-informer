@@ -18,27 +18,10 @@ type Informer struct {
 	IsLive       bool
 }
 
-// Response represents highest level of exactonline api response
-//
-type Response struct {
-	Data     *json.RawMessage `json:"data,omitempty"`
-	NextPage *NextPage        `json:"next_page,omitempty"`
-	Errors   *[]InformerError `json:"errors,omitempty"`
-}
-
-// NextPage contains info for batched data retrieval
-//
-type NextPage struct {
-	Offset string `json:"offset"`
-	Path   string `json:"path"`
-	URI    string `json:"uri"`
-}
-
 // InformerError contains error info
 //
 type InformerError struct {
-	Message string `json:"message"`
-	Help    string `json:"help"`
+	Error []string `json:"error"`
 }
 
 func New(apiURL string, apiKey string, securityCode string, isLive bool) (*Informer, error) {
@@ -68,12 +51,12 @@ func New(apiURL string, apiKey string, securityCode string, isLive bool) (*Infor
 
 // generic Get method
 //
-func (i *Informer) Get(url string, model interface{}) (*NextPage, *Response, error) {
+func (i *Informer) Get(url string, model interface{}) error {
 	client := &http.Client{}
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		return nil, nil, err
+		return err
 	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("ApiKey", i.ApiKey)
@@ -82,28 +65,20 @@ func (i *Informer) Get(url string, model interface{}) (*NextPage, *Response, err
 	// Send out the HTTP request
 	res, err := client.Do(req)
 	if err != nil {
-		return nil, nil, err
+		return err
 	}
 
 	defer res.Body.Close()
 
 	b, err := ioutil.ReadAll(res.Body)
-
-	response := Response{}
-
-	err = json.Unmarshal(b, &response)
 	if err != nil {
-		return nil, &response, err
+		return err
 	}
 
-	if response.Data == nil {
-		return nil, &response, nil
-	}
-
-	err = json.Unmarshal(*response.Data, &model)
+	err = json.Unmarshal(b, &model)
 	if err != nil {
-		return nil, &response, err
+		return err
 	}
 
-	return response.NextPage, &response, nil
+	return nil
 }
