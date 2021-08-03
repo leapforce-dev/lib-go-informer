@@ -2,6 +2,10 @@ package informer
 
 import (
 	"fmt"
+	"net/url"
+
+	errortools "github.com/leapforce-libraries/go_errortools"
+	go_http "github.com/leapforce-libraries/go_http"
 )
 
 // SalesInvoice stores SalesInvoice from Informer
@@ -53,25 +57,27 @@ type SalesInvoices struct {
 
 // GetSalesInvoices returns all salesInvoices
 //
-func (i *Informer) GetSalesInvoices() ([]SalesInvoice, error) {
-	urlStr := "%sinvoices/sales?page=%v"
-
-	salesInvoices_ := []SalesInvoice{}
+func (service *Service) GetSalesInvoices() (*[]SalesInvoice, *errortools.Error) {
+	salesInvoices := []SalesInvoice{}
 
 	page := 0
-	rowCount := 0
 
-	for rowCount > 0 || page == 0 {
-		url := fmt.Sprintf(urlStr, i.ApiURL, page)
+	for {
+		_salesInvoices := SalesInvoices{}
 
-		salesInvoices := SalesInvoices{}
+		params := url.Values{}
+		params.Set("page", fmt.Sprintf("%v", page))
 
-		err := i.Get(url, &salesInvoices)
-		if err != nil {
-			//fmt.Println("page", page)
-			return nil, err
+		requestConfig := go_http.RequestConfig{
+			URL:           service.url(fmt.Sprintf("invoices/sales?%s", params.Encode())),
+			ResponseModel: &_salesInvoices,
 		}
-		for salesInvoiceID, salesInvoice := range salesInvoices.SalesInvoices {
+		_, _, e := service.get(&requestConfig)
+		if e != nil {
+			return nil, e
+		}
+
+		for salesInvoiceID, salesInvoice := range _salesInvoices.SalesInvoices {
 			salesInvoice.ID = salesInvoiceID
 
 			paid_ := fmt.Sprintf("%v", salesInvoice.Paid_)
@@ -80,12 +86,14 @@ func (i *Informer) GetSalesInvoices() ([]SalesInvoice, error) {
 				salesInvoice.Paid = &paid_
 			}
 
-			salesInvoices_ = append(salesInvoices_, salesInvoice)
+			salesInvoices = append(salesInvoices, salesInvoice)
 		}
 
-		rowCount = len(salesInvoices.SalesInvoices)
+		if len(_salesInvoices.SalesInvoices) == 0 {
+			break
+		}
 		page++
 	}
 
-	return salesInvoices_, nil
+	return &salesInvoices, nil
 }

@@ -2,6 +2,10 @@ package informer
 
 import (
 	"fmt"
+	"net/url"
+
+	errortools "github.com/leapforce-libraries/go_errortools"
+	go_http "github.com/leapforce-libraries/go_http"
 )
 
 // Relation stores Relation from Informer
@@ -40,32 +44,37 @@ type Relations struct {
 
 // GetRelations returns all relations
 //
-func (i *Informer) GetRelations() ([]Relation, error) {
-	urlStr := "%srelations?page=%v"
-
-	relations_ := []Relation{}
+func (service *Service) GetRelations() (*[]Relation, *errortools.Error) {
+	relations := []Relation{}
 
 	page := 0
-	rowCount := 0
 
-	for rowCount > 0 || page == 0 {
-		url := fmt.Sprintf(urlStr, i.ApiURL, page)
+	for {
+		_relations := Relations{}
 
-		relations := Relations{}
+		params := url.Values{}
+		params.Set("page", fmt.Sprintf("%v", page))
 
-		err := i.Get(url, &relations)
-		if err != nil {
-			fmt.Println("page", page)
-			return nil, err
+		requestConfig := go_http.RequestConfig{
+			URL:           service.url(fmt.Sprintf("relations?%s", params.Encode())),
+			ResponseModel: &_relations,
 		}
-		for relationID, relation := range relations.Relations {
+		_, _, e := service.get(&requestConfig)
+		if e != nil {
+			return nil, e
+		}
+
+		for relationID, relation := range _relations.Relations {
 			relation.ID = relationID
-			relations_ = append(relations_, relation)
+
+			relations = append(relations, relation)
 		}
 
-		rowCount = len(relations.Relations)
+		if len(_relations.Relations) == 0 {
+			break
+		}
 		page++
 	}
 
-	return relations_, nil
+	return &relations, nil
 }

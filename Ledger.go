@@ -1,7 +1,8 @@
 package informer
 
 import (
-	"fmt"
+	errortools "github.com/leapforce-libraries/go_errortools"
+	go_http "github.com/leapforce-libraries/go_http"
 )
 
 // Ledger stores Ledger from Informer
@@ -24,22 +25,23 @@ type Ledgers struct {
 
 // GetLedgers returns all ledgers
 //
-func (i *Informer) GetLedgers() ([]Ledger, error) {
-	urlStr := "%sledgers"
-
+func (service *Service) GetLedgers() (*[]Ledger, *errortools.Error) {
 	ledgers := Ledgers{}
-	ledgers_ := []Ledger{}
 
-	url := fmt.Sprintf(urlStr, i.ApiURL)
-
-	err := i.Get(url, &ledgers)
-	if err != nil {
-		return nil, err
+	requestConfig := go_http.RequestConfig{
+		URL:           service.url("ledgers"),
+		ResponseModel: &ledgers,
 	}
+	_, _, e := service.get(&requestConfig)
+	if e != nil {
+		return nil, e
+	}
+
+	_ledgers := []Ledger{}
 	for id, ledger := range ledgers.Ledgers {
 		ledger.ID = id
-		ledgers_ = append(ledgers_, ledger)
+		_ledgers = append(_ledgers, ledger)
 	}
 
-	return ledgers_, nil
+	return &_ledgers, nil
 }

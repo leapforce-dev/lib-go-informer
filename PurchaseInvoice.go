@@ -2,9 +2,13 @@ package informer
 
 import (
 	"fmt"
+	"net/url"
+
+	errortools "github.com/leapforce-libraries/go_errortools"
+	go_http "github.com/leapforce-libraries/go_http"
 )
 
-// PurchaseInvoice stores PurchaseInvoice from Informer
+// PurchaseInvoice stores PurchaseInvoice from Service
 //
 type PurchaseInvoice struct {
 	ID                string
@@ -38,25 +42,27 @@ type PurchaseInvoices struct {
 
 // GetPurchaseInvoices returns all purchaseInvoices
 //
-func (i *Informer) GetPurchaseInvoices() ([]PurchaseInvoice, error) {
-	urlStr := "%sinvoices/purchase?page=%v"
-
-	purchaseInvoices_ := []PurchaseInvoice{}
+func (service *Service) GetPurchaseInvoices() (*[]PurchaseInvoice, *errortools.Error) {
+	purchaseInvoices := []PurchaseInvoice{}
 
 	page := 0
-	rowCount := 0
 
-	for rowCount > 0 || page == 0 {
-		url := fmt.Sprintf(urlStr, i.ApiURL, page)
+	for {
+		_purchaseInvoices := PurchaseInvoices{}
 
-		purchaseInvoices := PurchaseInvoices{}
+		params := url.Values{}
+		params.Set("page", fmt.Sprintf("%v", page))
 
-		err := i.Get(url, &purchaseInvoices)
-		if err != nil {
-			//fmt.Println("page", page)
-			return nil, err
+		requestConfig := go_http.RequestConfig{
+			URL:           service.url(fmt.Sprintf("invoices/purchase?%s", params.Encode())),
+			ResponseModel: &_purchaseInvoices,
 		}
-		for purchaseInvoiceID, purchaseInvoice := range purchaseInvoices.PurchaseInvoices {
+		_, _, e := service.get(&requestConfig)
+		if e != nil {
+			return nil, e
+		}
+
+		for purchaseInvoiceID, purchaseInvoice := range _purchaseInvoices.PurchaseInvoices {
 			purchaseInvoice.ID = purchaseInvoiceID
 
 			paid_ := fmt.Sprintf("%v", purchaseInvoice.Paid_)
@@ -65,12 +71,14 @@ func (i *Informer) GetPurchaseInvoices() ([]PurchaseInvoice, error) {
 				purchaseInvoice.Paid = &paid_
 			}
 
-			purchaseInvoices_ = append(purchaseInvoices_, purchaseInvoice)
+			purchaseInvoices = append(purchaseInvoices, purchaseInvoice)
 		}
 
-		rowCount = len(purchaseInvoices.PurchaseInvoices)
+		if len(_purchaseInvoices.PurchaseInvoices) == 0 {
+			break
+		}
 		page++
 	}
 
-	return purchaseInvoices_, nil
+	return &purchaseInvoices, nil
 }

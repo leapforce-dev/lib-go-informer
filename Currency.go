@@ -1,10 +1,11 @@
 package informer
 
 import (
-	"fmt"
+	errortools "github.com/leapforce-libraries/go_errortools"
+	go_http "github.com/leapforce-libraries/go_http"
 )
 
-// Currency stores Currency from Informer
+// Currency stores Currency from Service
 //
 type Currency struct {
 	ID          string
@@ -23,22 +24,23 @@ type Currencies struct {
 
 // GetCurrencies returns all currencies
 //
-func (i *Informer) GetCurrencies() ([]Currency, error) {
-	urlStr := "%scurrencies"
-
+func (service *Service) GetCurrencies() (*[]Currency, *errortools.Error) {
 	currencies := Currencies{}
-	currencies_ := []Currency{}
 
-	url := fmt.Sprintf(urlStr, i.ApiURL)
-
-	err := i.Get(url, &currencies)
-	if err != nil {
-		return nil, err
+	requestConfig := go_http.RequestConfig{
+		URL:           service.url("currencies"),
+		ResponseModel: &currencies,
 	}
+	_, _, e := service.get(&requestConfig)
+	if e != nil {
+		return nil, e
+	}
+
+	_currencies := []Currency{}
 	for id, currency := range currencies.Currencies {
 		currency.ID = id
-		currencies_ = append(currencies_, currency)
+		_currencies = append(_currencies, currency)
 	}
 
-	return currencies_, nil
+	return &_currencies, nil
 }

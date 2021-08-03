@@ -2,9 +2,13 @@ package informer
 
 import (
 	"fmt"
+	"net/url"
+
+	errortools "github.com/leapforce-libraries/go_errortools"
+	go_http "github.com/leapforce-libraries/go_http"
 )
 
-// LedgerEntry stores LedgerEntry from Informer
+// LedgerEntry stores LedgerEntry from Service
 //
 type LedgerEntry struct {
 	InvoiceID        string      `json:"invoice_id"`
@@ -26,19 +30,37 @@ type LedgerEntries struct {
 	LedgerEntries []LedgerEntry `json:"ledger_entries"`
 }
 
+type LedgerEntriesConfig struct {
+	LedgerID   string
+	YearFrom   int
+	YearTo     int
+	PeriodFrom int
+	PeriodTo   int
+}
+
 // GetLedgerEntries returns all ledgerEntries
 //
-func (i *Informer) GetLedgerEntries(ledgerID string, yearFrom int, yearTo int, periodFrom int, periodTo int) ([]LedgerEntry, error) {
-	urlStr := "%sreports/ledger?ledger_id=%s&year_from=%v&year_to=%v&period_from=%v&period_to=%v"
-	url := fmt.Sprintf(urlStr, i.ApiURL, ledgerID, yearFrom, yearTo, periodFrom, periodTo)
-	//fmt.Println(url)
+func (service *Service) GetLedgerEntries(config *LedgerEntriesConfig) (*[]LedgerEntry, *errortools.Error) {
+	if config == nil {
+		return nil, errortools.ErrorMessage("LedgerEntriesConfig must not be nill")
+	}
+
+	params := url.Values{}
+	params.Set("ledger_id", config.LedgerID)
+	params.Set("year_from", fmt.Sprintf("%v", config.YearFrom))
+	params.Set("year_to", fmt.Sprintf("%v", config.YearFrom))
+	params.Set("period_from", fmt.Sprintf("%v", config.PeriodFrom))
+	params.Set("period_to", fmt.Sprintf("%v", config.PeriodTo))
 
 	ledgerEntries := LedgerEntries{}
 
-	err := i.Get(url, &ledgerEntries)
-	if err != nil {
-		//fmt.Println("page", page)
-		return nil, err
+	requestConfig := go_http.RequestConfig{
+		URL:           service.url(fmt.Sprintf("reports/ledger?%s", params.Encode())),
+		ResponseModel: &ledgerEntries,
+	}
+	_, _, e := service.get(&requestConfig)
+	if e != nil {
+		return nil, e
 	}
 
 	for i := range ledgerEntries.LedgerEntries {
@@ -53,5 +75,5 @@ func (i *Informer) GetLedgerEntries(ledgerID string, yearFrom int, yearTo int, p
 		}
 	}
 
-	return ledgerEntries.LedgerEntries, nil
+	return &ledgerEntries.LedgerEntries, nil
 }
