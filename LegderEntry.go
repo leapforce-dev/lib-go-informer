@@ -30,7 +30,7 @@ type LedgerEntries struct {
 	LedgerEntries []LedgerEntry `json:"ledger_entries"`
 }
 
-type LedgerEntriesConfig struct {
+type GetLedgerEntriesConfig struct {
 	LedgerID   string
 	YearFrom   int
 	YearTo     int
@@ -40,9 +40,9 @@ type LedgerEntriesConfig struct {
 
 // GetLedgerEntries returns all ledgerEntries
 //
-func (service *Service) GetLedgerEntries(config *LedgerEntriesConfig) (*[]LedgerEntry, *errortools.Error) {
+func (service *Service) GetLedgerEntries(config *GetLedgerEntriesConfig) (*[]LedgerEntry, *errortools.Error) {
 	if config == nil {
-		return nil, errortools.ErrorMessage("LedgerEntriesConfig must not be nill")
+		return nil, errortools.ErrorMessage("GetLedgerEntriesConfig must not be nill")
 	}
 
 	params := url.Values{}
