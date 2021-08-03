@@ -48,7 +48,7 @@ func (service *Service) GetLedgerEntries(config *GetLedgerEntriesConfig) (*[]Led
 	params := url.Values{}
 	params.Set("ledger_id", config.LedgerID)
 	params.Set("year_from", fmt.Sprintf("%v", config.YearFrom))
-	params.Set("year_to", fmt.Sprintf("%v", config.YearFrom))
+	params.Set("year_to", fmt.Sprintf("%v", config.YearTo))
 	params.Set("period_from", fmt.Sprintf("%v", config.PeriodFrom))
 	params.Set("period_to", fmt.Sprintf("%v", config.PeriodTo))
 
