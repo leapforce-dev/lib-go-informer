@@ -1,6 +1,8 @@
 package informer
 
 import (
+	"net/http"
+
 	errortools "github.com/leapforce-libraries/go_errortools"
 	go_http "github.com/leapforce-libraries/go_http"
 )
@@ -28,10 +30,11 @@ func (service *Service) GetCurrencies() (*[]Currency, *errortools.Error) {
 	currencies := Currencies{}
 
 	requestConfig := go_http.RequestConfig{
+		Method:        http.MethodGet,
 		URL:           service.url("currencies"),
 		ResponseModel: &currencies,
 	}
-	_, _, e := service.get(&requestConfig)
+	_, _, e := service.httpRequest(&requestConfig)
 	if e != nil {
 		return nil, e
 	}

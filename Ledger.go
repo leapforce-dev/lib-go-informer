@@ -1,6 +1,8 @@
 package informer
 
 import (
+	"net/http"
+
 	errortools "github.com/leapforce-libraries/go_errortools"
 	go_http "github.com/leapforce-libraries/go_http"
 )
@@ -29,10 +31,11 @@ func (service *Service) GetLedgers() (*[]Ledger, *errortools.Error) {
 	ledgers := Ledgers{}
 
 	requestConfig := go_http.RequestConfig{
+		Method:        http.MethodGet,
 		URL:           service.url("ledgers"),
 		ResponseModel: &ledgers,
 	}
-	_, _, e := service.get(&requestConfig)
+	_, _, e := service.httpRequest(&requestConfig)
 	if e != nil {
 		return nil, e
 	}
