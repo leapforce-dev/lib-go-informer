@@ -12,7 +12,7 @@ import (
 // LedgerEntry stores LedgerEntry from Service
 //
 type LedgerEntry struct {
-	InvoiceID        string      `json:"invoice_id"`
+	InvoiceId        string      `json:"invoice_id"`
 	Number           string      `json:"number"`
 	Type             string      `json:"type"`
 	Date             string      `json:"date"`
@@ -32,7 +32,7 @@ type LedgerEntries struct {
 }
 
 type GetLedgerEntriesConfig struct {
-	LedgerID   string
+	LedgerId   string
 	YearFrom   int
 	YearTo     int
 	PeriodFrom int
@@ -47,7 +47,7 @@ func (service *Service) GetLedgerEntries(config *GetLedgerEntriesConfig) (*[]Led
 	}
 
 	params := url.Values{}
-	params.Set("ledger_id", config.LedgerID)
+	params.Set("ledger_id", config.LedgerId)
 	params.Set("year_from", fmt.Sprintf("%v", config.YearFrom))
 	params.Set("year_to", fmt.Sprintf("%v", config.YearTo))
 	params.Set("period_from", fmt.Sprintf("%v", config.PeriodFrom))
@@ -57,7 +57,7 @@ func (service *Service) GetLedgerEntries(config *GetLedgerEntriesConfig) (*[]Led
 
 	requestConfig := go_http.RequestConfig{
 		Method:        http.MethodGet,
-		URL:           service.url(fmt.Sprintf("reports/ledger?%s", params.Encode())),
+		Url:           service.url(fmt.Sprintf("reports/ledger?%s", params.Encode())),
 		ResponseModel: &ledgerEntries,
 	}
 	_, _, e := service.httpRequest(&requestConfig)

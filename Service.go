@@ -27,13 +27,13 @@ type ErrorResponse struct {
 }
 
 type ServiceConfig struct {
-	APIKey       string
+	ApiKey       string
 	SecurityCode string
 }
 
 func NewService(config *ServiceConfig) (*Service, *errortools.Error) {
-	if config.APIKey == "" {
-		return nil, errortools.ErrorMessage("APIKey not provided")
+	if config.ApiKey == "" {
+		return nil, errortools.ErrorMessage("ApiKey not provided")
 	}
 	if config.SecurityCode == "" {
 		return nil, errortools.ErrorMessage("SecurityCode not provided")
@@ -45,7 +45,7 @@ func NewService(config *ServiceConfig) (*Service, *errortools.Error) {
 	}
 
 	return &Service{
-		apiKey:       config.APIKey,
+		apiKey:       config.ApiKey,
 		securityCode: config.SecurityCode,
 		httpService:  httpService,
 	}, nil
@@ -62,7 +62,7 @@ func (service *Service) httpRequest(requestConfig *go_http.RequestConfig) (*http
 	errorResponse := ErrorResponse{}
 	(*requestConfig).ErrorModel = &errorResponse
 
-	request, response, e := service.httpService.HTTPRequest(requestConfig)
+	request, response, e := service.httpService.HttpRequest(requestConfig)
 	if len(errorResponse.Error) > 0 {
 		e.SetMessage(strings.Join(errorResponse.Error, "\n"))
 	}
@@ -74,18 +74,18 @@ func (service *Service) url(path string) string {
 	return fmt.Sprintf("%s/%s", apiURL, path)
 }
 
-func (service *Service) APIName() string {
+func (service *Service) ApiName() string {
 	return apiName
 }
 
-func (service *Service) APIKey() string {
+func (service *Service) ApiKey() string {
 	return service.apiKey
 }
 
-func (service *Service) APICallCount() int64 {
+func (service *Service) ApiCallCount() int64 {
 	return service.httpService.RequestCount()
 }
 
-func (service *Service) APIReset() {
+func (service *Service) ApiReset() {
 	service.httpService.ResetRequestCount()
 }

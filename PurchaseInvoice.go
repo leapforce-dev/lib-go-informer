@@ -12,14 +12,14 @@ import (
 // PurchaseInvoice stores PurchaseInvoice from Service
 //
 type PurchaseInvoice struct {
-	ID                string
-	RelationID        string                         `json:"relation_id"`
+	Id                string
+	RelationId        string                         `json:"relation_id"`
 	Number            string                         `json:"number"`
 	Date              string                         `json:"date"`
 	TotalPriceExclTax string                         `json:"total_price_excl_tax"`
 	TotalPriceInclTax string                         `json:"total_price_incl_tax"`
-	VATAmount         string                         `json:"vat_amount"`
-	VATOption         string                         `json:"vat_option"`
+	VatAmount         string                         `json:"vat_amount"`
+	VatOption         string                         `json:"vat_option"`
 	Exported          string                         `json:"exported"`
 	ExportDate        string                         `json:"export_date"`
 	ExpiryDate        string                         `json:"expiry_date"`
@@ -31,10 +31,10 @@ type PurchaseInvoice struct {
 type PurchaseInvoiceLine struct {
 	Description     string `json:"description"`
 	Amount          string `json:"amount"`
-	VATID           string `json:"vat_id"`
-	VATPercentage   string `json:"vat_percentage"`
-	LedgerAccountID string `json:"ledger_account_id"`
-	CostsID         string `json:"costs_id"`
+	VatId           string `json:"vat_id"`
+	VatPercentage   string `json:"vat_percentage"`
+	LedgerAccountId string `json:"ledger_account_id"`
+	CostsId         string `json:"costs_id"`
 }
 
 type PurchaseInvoices struct {
@@ -56,7 +56,7 @@ func (service *Service) GetPurchaseInvoices() (*[]PurchaseInvoice, *errortools.E
 
 		requestConfig := go_http.RequestConfig{
 			Method:        http.MethodGet,
-			URL:           service.url(fmt.Sprintf("invoices/purchase?%s", params.Encode())),
+			Url:           service.url(fmt.Sprintf("invoices/purchase?%s", params.Encode())),
 			ResponseModel: &_purchaseInvoices,
 		}
 		_, _, e := service.httpRequest(&requestConfig)
@@ -64,8 +64,8 @@ func (service *Service) GetPurchaseInvoices() (*[]PurchaseInvoice, *errortools.E
 			return nil, e
 		}
 
-		for purchaseInvoiceID, purchaseInvoice := range _purchaseInvoices.PurchaseInvoices {
-			purchaseInvoice.ID = purchaseInvoiceID
+		for purchaseInvoiceId, purchaseInvoice := range _purchaseInvoices.PurchaseInvoices {
+			purchaseInvoice.Id = purchaseInvoiceId
 
 			paid_ := fmt.Sprintf("%v", purchaseInvoice.Paid_)
 			if paid_ != "0" {

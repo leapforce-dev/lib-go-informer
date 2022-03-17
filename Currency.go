@@ -10,14 +10,14 @@ import (
 // Currency stores Currency from Service
 //
 type Currency struct {
-	ID          string
+	Id          string
 	Currency    string `json:"currency"`
 	Description string `json:"description"`
 	Rate        string `json:"rate"`
 	AutoUpdate  string `json:"autoupdate"`
-	JournalID   string `json:"journal_id "`
-	LedgerID    string `json:"ledger_id"`
-	BankID      string `json:"bank_id"`
+	JournalId   string `json:"journal_id "`
+	LedgerId    string `json:"ledger_id"`
+	BankId      string `json:"bank_id"`
 }
 
 type Currencies struct {
@@ -31,7 +31,7 @@ func (service *Service) GetCurrencies() (*[]Currency, *errortools.Error) {
 
 	requestConfig := go_http.RequestConfig{
 		Method:        http.MethodGet,
-		URL:           service.url("currencies"),
+		Url:           service.url("currencies"),
 		ResponseModel: &currencies,
 	}
 	_, _, e := service.httpRequest(&requestConfig)
@@ -41,7 +41,7 @@ func (service *Service) GetCurrencies() (*[]Currency, *errortools.Error) {
 
 	_currencies := []Currency{}
 	for id, currency := range currencies.Currencies {
-		currency.ID = id
+		currency.Id = id
 		_currencies = append(_currencies, currency)
 	}
 

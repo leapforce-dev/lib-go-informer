@@ -12,7 +12,7 @@ import (
 // Relation stores Relation from Informer
 //
 type Relation struct {
-	ID                     string
+	Id                     string
 	RelationNumber         string `json:"relation_number"`
 	RelationType           string `json:"relation_type"`
 	CompanyName            string `json:"company_name"`
@@ -22,20 +22,20 @@ type Relation struct {
 	Street                 string `json:"street"`
 	HouseNumber            string `json:"house_number"`
 	HouseNumberSuffix      string `json:"house_number_suffix"`
-	ZIP                    string `json:"zip"`
+	Zip                    string `json:"zip"`
 	City                   string `json:"city"`
 	Country                string `json:"country"`
 	PhoneNumber            string `json:"phone_number"`
 	FaxNumber              string `json:"fax_number"`
 	Web                    string `json:"web"`
 	Email                  string `json:"email"`
-	COC                    string `json:"coc"`
-	VAT                    string `json:"vat"`
-	IBAN                   string `json:"iban"`
-	BIC                    string `json:"bic"`
+	Coc                    string `json:"coc"`
+	Vat                    string `json:"vat"`
+	Iban                   string `json:"iban"`
+	Bic                    string `json:"bic"`
 	EmailInvoice           string `json:"email_invoice"`
-	SalesInvoiceTemplateID string `json:"sales_invoice_template_id"`
-	PaymentConditionID     string `json:"payment_condition_id"`
+	SalesInvoiceTemplateId string `json:"sales_invoice_template_id"`
+	PaymentConditionId     string `json:"payment_condition_id"`
 	//Contacts               map[string]Contact `json:"contacts"`
 }
 
@@ -58,7 +58,7 @@ func (service *Service) GetRelations() (*[]Relation, *errortools.Error) {
 
 		requestConfig := go_http.RequestConfig{
 			Method:        http.MethodGet,
-			URL:           service.url(fmt.Sprintf("relations?%s", params.Encode())),
+			Url:           service.url(fmt.Sprintf("relations?%s", params.Encode())),
 			ResponseModel: &_relations,
 		}
 		_, _, e := service.httpRequest(&requestConfig)
@@ -66,8 +66,8 @@ func (service *Service) GetRelations() (*[]Relation, *errortools.Error) {
 			return nil, e
 		}
 
-		for relationID, relation := range _relations.Relations {
-			relation.ID = relationID
+		for relationId, relation := range _relations.Relations {
+			relation.Id = relationId
 
 			relations = append(relations, relation)
 		}

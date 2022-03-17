@@ -10,14 +10,14 @@ import (
 // Ledger stores Ledger from Informer
 //
 type Ledger struct {
-	ID          string
+	Id          string
 	Number      string  `json:"number"`
 	Description string  `json:"description"`
 	Type        string  `json:"type"`
 	Category    string  `json:"category"`
-	VATCode     *string `json:"vat_code"`
+	VatCode     *string `json:"vat_code"`
 	Costs       *string `json:"costs"`
-	RGS         *string `json:"rgs"`
+	Rgs         *string `json:"rgs"`
 	Blocked     *string `json:"blocked"`
 }
 
@@ -32,7 +32,7 @@ func (service *Service) GetLedgers() (*[]Ledger, *errortools.Error) {
 
 	requestConfig := go_http.RequestConfig{
 		Method:        http.MethodGet,
-		URL:           service.url("ledgers"),
+		Url:           service.url("ledgers"),
 		ResponseModel: &ledgers,
 	}
 	_, _, e := service.httpRequest(&requestConfig)
@@ -42,7 +42,7 @@ func (service *Service) GetLedgers() (*[]Ledger, *errortools.Error) {
 
 	_ledgers := []Ledger{}
 	for id, ledger := range ledgers.Ledgers {
-		ledger.ID = id
+		ledger.Id = id
 		_ledgers = append(_ledgers, ledger)
 	}
 

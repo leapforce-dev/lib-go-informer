@@ -12,12 +12,12 @@ import (
 // SalesInvoice stores SalesInvoice from Informer
 //
 type SalesInvoice struct {
-	ID                 string
-	RelationID         string                      `json:"relation_id"`
-	ContactID          string                      `json:"contact_id"`
+	Id                 string
+	RelationId         string                      `json:"relation_id"`
+	ContactId          string                      `json:"contact_id"`
 	ContactName        string                      `json:"contact_name"`
-	TemplateID         string                      `json:"template_id"`
-	PaymentConditionID string                      `json:"payment_condition_id"`
+	TemplateId         string                      `json:"template_id"`
+	PaymentConditionId string                      `json:"payment_condition_id"`
 	Number             string                      `json:"number"`
 	Date               string                      `json:"date"`
 	ExpiryDays         string                      `json:"expiry_days"`
@@ -27,7 +27,7 @@ type SalesInvoice struct {
 	TotalPriceInclTax  string                      `json:"total_price_incl_tax"`
 	Paid_              interface{}                 `json:"paid"`
 	Paid               *string                     `json:"-"`
-	VATOption          string                      `json:"vat_option"`
+	VatOption          string                      `json:"vat_option"`
 	Comment            string                      `json:"comment"`
 	FooterText         string                      `json:"footer_text"`
 	Reference          string                      `json:"reference"`
@@ -42,14 +42,14 @@ type SalesInvoiceLine struct {
 	//Number          string
 	Info            string `json:"info"`
 	Quantity        string `json:"qty"`
-	ProductID       string `json:"product_id"`
+	ProductId       string `json:"product_id"`
 	Description     string `json:"description"`
 	Amount          string `json:"amount"`
 	Discount        string `json:"discount"`
-	VATID           string `json:"vat_id"`
-	VATPercentage   string `json:"vat_percentage"`
-	LedgerAccountID string `json:"ledger_account_id"`
-	CostsID         string `json:"costs_id"`
+	VatId           string `json:"vat_id"`
+	VatPercentage   string `json:"vat_percentage"`
+	LedgerAccountId string `json:"ledger_account_id"`
+	CostsId         string `json:"costs_id"`
 }
 
 type SalesInvoices struct {
@@ -71,7 +71,7 @@ func (service *Service) GetSalesInvoices() (*[]SalesInvoice, *errortools.Error) 
 
 		requestConfig := go_http.RequestConfig{
 			Method:        http.MethodGet,
-			URL:           service.url(fmt.Sprintf("invoices/sales?%s", params.Encode())),
+			Url:           service.url(fmt.Sprintf("invoices/sales?%s", params.Encode())),
 			ResponseModel: &_salesInvoices,
 		}
 		_, _, e := service.httpRequest(&requestConfig)
@@ -79,8 +79,8 @@ func (service *Service) GetSalesInvoices() (*[]SalesInvoice, *errortools.Error) 
 			return nil, e
 		}
 
-		for salesInvoiceID, salesInvoice := range _salesInvoices.SalesInvoices {
-			salesInvoice.ID = salesInvoiceID
+		for salesInvoiceId, salesInvoice := range _salesInvoices.SalesInvoices {
+			salesInvoice.Id = salesInvoiceId
 
 			paid_ := fmt.Sprintf("%v", salesInvoice.Paid_)
 			if paid_ != "0" {
