@@ -1,6 +1,7 @@
 package informer
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -10,7 +11,6 @@ import (
 )
 
 // SalesInvoice stores SalesInvoice from Informer
-//
 type SalesInvoice struct {
 	Id                 string
 	RelationId         string                      `json:"relation_id"`
@@ -34,7 +34,7 @@ type SalesInvoice struct {
 	Concept            string                      `json:"concept"`
 	ReminderStatus     string                      `json:"reminder_status"`
 	LastReminderDate   string                      `json:"last_reminder_date"`
-	Attachments        map[string]string           `json:"attachments"`
+	Attachments        map[string]json.RawMessage  `json:"attachments"`
 	Lines              map[string]SalesInvoiceLine `json:"line"`
 }
 
@@ -57,7 +57,6 @@ type SalesInvoices struct {
 }
 
 // GetSalesInvoices returns all salesInvoices
-//
 func (service *Service) GetSalesInvoices() (*[]SalesInvoice, *errortools.Error) {
 	salesInvoices := []SalesInvoice{}
 
