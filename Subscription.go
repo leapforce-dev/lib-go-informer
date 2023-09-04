@@ -34,6 +34,7 @@ type Subscription struct {
 	FooterText              string                                    `json:"footer_text"`
 	Reference               string                                    `json:"reference"`
 	Concept                 go_types.BoolString                       `json:"concept"`
+	SubscriptionTypeId      go_types.Int64String                      `json:"subscription_type_id"`
 	SubscriptionFrequency   string                                    `json:"subscription_frequency"`
 	SubscriptionStartDate   t_types.DateString                        `json:"subscription_start_date"`
 	SubscriptionInvoiceDate *t_types.DateString                       `json:"subscription_invoice_date"`
@@ -61,7 +62,6 @@ type SubscriptionLine struct {
 }
 
 // GetSubscriptions returns all subscriptions
-//
 func (service *Service) GetSubscriptions() (*[]Subscription, *errortools.Error) {
 	subscriptions := []Subscription{}
 
