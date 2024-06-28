@@ -34,6 +34,7 @@ type SalesInvoice struct {
 	Concept            string                      `json:"concept"`
 	ReminderStatus     string                      `json:"reminder_status"`
 	LastReminderDate   string                      `json:"last_reminder_date"`
+	LastEdit           string                      `json:"last_edit"`
 	Attachments        map[string]json.RawMessage  `json:"attachments"`
 	Lines              map[string]SalesInvoiceLine `json:"line"`
 }
