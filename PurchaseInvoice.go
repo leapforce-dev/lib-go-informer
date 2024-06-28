@@ -10,7 +10,6 @@ import (
 )
 
 // PurchaseInvoice stores PurchaseInvoice from Service
-//
 type PurchaseInvoice struct {
 	Id                string
 	RelationId        string                         `json:"relation_id"`
@@ -25,6 +24,7 @@ type PurchaseInvoice struct {
 	ExpiryDate        string                         `json:"expiry_date"`
 	Paid_             interface{}                    `json:"paid"`
 	Paid              *string                        `json:"-"`
+	LastEdit          string                         `json:"last_edit"`
 	Lines             map[string]PurchaseInvoiceLine `json:"line"`
 }
 
@@ -42,7 +42,6 @@ type PurchaseInvoices struct {
 }
 
 // GetPurchaseInvoices returns all purchaseInvoices
-//
 func (service *Service) GetPurchaseInvoices() (*[]PurchaseInvoice, *errortools.Error) {
 	purchaseInvoices := []PurchaseInvoice{}
 
