@@ -1,12 +1,12 @@
 module github.com/leapforce-libraries/go_informer
 
-go 1.20
+go 1.22
 
 require (
 	cloud.google.com/go v0.115.0
 	github.com/leapforce-libraries/go_errortools v0.0.0-20230306211452-9ccee0cdafe8
 	github.com/leapforce-libraries/go_http v0.0.0-20230420114702-86cc77fcf983
-	github.com/leapforce-libraries/go_types v0.0.0-20230425074203-34c9cae0aa4e
+	github.com/leapforce-libraries/go_types v0.0.0-20240717215204-bd3c2778b7f5
 )
 
 require (
