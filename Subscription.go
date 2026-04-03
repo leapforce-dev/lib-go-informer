@@ -23,17 +23,17 @@ type Subscription struct {
 	TemplateId              go_types.Int64String                      `json:"template_id"`
 	PaymentConditionId      go_types.Int64String                      `json:"payment_condition_id"`
 	Number                  go_types.Int64String                      `json:"number"`
-	Date                    t_types.DateString                        `json:"date"`
-	ExpiryDays              go_types.Int64String                      `json:"expiry_days"`
+	Date                    *t_types.DateString                       `json:"date"`
+	ExpiryDays              *go_types.Int64String                     `json:"expiry_days"`
 	ExpiryDate              *t_types.DateString                       `json:"expiry_date"`
-	Expired                 go_types.BoolString                       `json:"expired"`
+	Expired                 *go_types.BoolString                      `json:"expired"`
 	TotalPriceExclVat       go_types.Float64String                    `json:"total_price_excl_vat"`
 	TotalPriceInclVat       go_types.Float64String                    `json:"total_price_incl_vat"`
 	VatOption               string                                    `json:"vat_option"`
 	Comment                 string                                    `json:"comment"`
 	FooterText              string                                    `json:"footer_text"`
 	Reference               string                                    `json:"reference"`
-	Concept                 go_types.BoolString                       `json:"concept"`
+	Concept                 *go_types.BoolString                      `json:"concept"`
 	SubscriptionTypeId      go_types.Int64String                      `json:"subscription_type_id"`
 	SubscriptionFrequency   string                                    `json:"subscription_frequency"`
 	SubscriptionStartDate   t_types.DateString                        `json:"subscription_start_date"`
@@ -41,7 +41,7 @@ type Subscription struct {
 	SubscriptionEndDate     *t_types.DateString                       `json:"subscription_end_date"`
 	SubscriptionRestriction string                                    `json:"subscription_restriction"`
 	SubscriptionTimes       go_types.Int64String                      `json:"subscription_times"`
-	SubscriptionSend        go_types.BoolString                       `json:"subscription_send"`
+	SubscriptionSend        *go_types.BoolString                      `json:"subscription_send"`
 	ReminderStatus          string                                    `json:"reminder_status"`
 	LastReminderDate        *t_types.DateString                       `json:"last_reminder_date"`
 	InvoiceUrl              string                                    `json:"invoice_url"`
